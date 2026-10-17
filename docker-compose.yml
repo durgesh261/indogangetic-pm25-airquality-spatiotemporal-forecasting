@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  air-quality-forecaster:
+    build: .
+    container_name: indo_gangetic_air_quality_service
+    ports:
+      - "8001:8001"
+    restart: unless-stopped
+    environment:
+      - PORT=8001
+    volumes:
+      - ./outputs:/app/outputs
