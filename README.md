@@ -98,7 +98,7 @@ Visual artifacts and rolling forecasts are saved to [`outputs/pm25_spatiotempora
 ## 4. Repository Structure
 
 ```
-02_IndoGangetic_PM25_AirQuality_Spatiotemporal_Forecasting/
+indogangetic-pm25-airquality-spatiotemporal-forecasting/
 ├── README.md                          # Engineering & Research Documentation
 ├── requirements.txt                   # Production dependencies
 ├── pyproject.toml                     # PEP 517 build configuration
@@ -127,7 +127,8 @@ Visual artifacts and rolling forecasts are saved to [`outputs/pm25_spatiotempora
 
 ### Local Python Environment
 ```bash
-cd 02_IndoGangetic_PM25_AirQuality_Spatiotemporal_Forecasting
+git clone https://github.com/durgesh261/indogangetic-pm25-airquality-spatiotemporal-forecasting.git
+cd indogangetic-pm25-airquality-spatiotemporal-forecasting
 pip install -r requirements.txt
 python run_demo.py
 python -m pytest tests/ -v
