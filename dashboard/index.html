@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VayuDrishti: Indo-Gangetic PM2.5 Spatiotemporal Smog Digital Twin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header>
+      <div class="title-area">
+        <h1>
+          VayuDrishti
+          <span class="badge-tag">Spatiotemporal Digital Twin</span>
+        </h1>
+        <p class="subtitle">
+          Multi-Horizon PM2.5 Forecasting with Spatial-Temporal Attention, Multi-Quantile Uncertainty & Satellite Stubble-Burning Attribution
+        </p>
+      </div>
+      <div class="header-links">
+        <a href="paper.html" class="btn-link">📄 Read Paper</a>
+        <a href="docs.html" class="btn-link">📂 Docs & API</a>
+        <a href="https://github.com/durgesh261/indogangetic-pm25-airquality-spatiotemporal-forecasting" class="btn-link" target="_blank" rel="noopener noreferrer">⭐ GitHub</a>
+      </div>
+    </header>
+
+    <!-- Controls Bar -->
+    <div class="controls-card">
+      <div class="slider-container">
+        <div class="slider-label-row">
+          <span>Winter Smog Episode: <strong id="activeDateBadge" class="active-step-badge">Nov 01 (Early Harvest Season)</strong></span>
+          <span>Timeline: Oct 25 ➔ Jan 15 (Indo-Gangetic Basin Smog Cycle)</span>
+        </div>
+        <input type="range" id="timeSlider" class="range-slider" min="0" max="15" value="6" step="1">
+      </div>
+      <div class="controls-actions">
+        <button id="prevBtn" class="btn-ctrl">◀ Prev Episode</button>
+        <button id="playBtn" class="btn-ctrl primary">▶ Play Simulation</button>
+        <button id="nextBtn" class="btn-ctrl">Next Episode ▶</button>
+        
+        <button id="counterfactualBtn" class="btn-ctrl btn-toggle-active">🔥 Stubble Burning: ACTIVE</button>
+
+        <select id="windSelect" class="filter-select">
+          <option value="nw">Wind: Northwesterly (Inversion Transport to Delhi)</option>
+          <option value="easterly">Wind: Easterly Dispersion (Favorable)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Live Metrics HUD -->
+    <div class="metrics-grid">
+      <div class="metric-card alert">
+        <span class="metric-title">Delhi-NCR Mean PM2.5</span>
+        <span id="m-delhi-pm25" class="metric-value">348.5 µg/m³</span>
+        <span id="m-aqi-tag" class="metric-delta delta-danger">▲ CPCB Category: SEVERE</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-title">NASA Satellite Active Fires</span>
+        <span id="m-fires" class="metric-value">3,840 Fires</span>
+        <span class="metric-delta delta-warn">🔥 Punjab & Haryana Farm Belt</span>
+      </div>
+      <div class="metric-card purple">
+        <span class="metric-title">Stubble-Burning Attribution</span>
+        <span id="m-stubble-share" class="metric-value">44.2%</span>
+        <span class="metric-delta delta-danger">⚡ Upstream Agricultural Plume</span>
+      </div>
+      <div class="metric-card success">
+        <span class="metric-title">Prediction Interval Coverage</span>
+        <span id="m-coverage" class="metric-value">84.0%</span>
+        <span class="metric-delta delta-good">● Calibrated 80% CI [q10, q90]</span>
+      </div>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <div class="workspace-grid">
+      <!-- Interactive Geographic Basin Map Canvas -->
+      <div class="canvas-card">
+        <div class="canvas-header">
+          <h2>
+            <span>🗺️</span>
+            <span>Indo-Gangetic Atmospheric Basin & Active Fire Transport Map</span>
+          </h2>
+          <div class="legend">
+            <div class="legend-item"><span class="dot dot-good"></span> Good</div>
+            <div class="legend-item"><span class="dot dot-mod"></span> Moderate</div>
+            <div class="legend-item"><span class="dot dot-poor"></span> Poor</div>
+            <div class="legend-item"><span class="dot dot-vpoor"></span> Very Poor</div>
+            <div class="legend-item"><span class="dot dot-severe"></span> Severe</div>
+            <div class="legend-item"><span class="dot dot-fire"></span> Farm Fires</div>
+          </div>
+        </div>
+        <div class="canvas-wrapper">
+          <canvas id="airQualityCanvas"></canvas>
+        </div>
+        <p style="font-size: 11px; color: var(--text-dim); margin-top: 8px;">
+          💡 <strong>Tip:</strong> Click any CPCB monitoring station circle to inspect its 24h/48h/72h forecast bands and local stubble burning source attribution.
+        </p>
+      </div>
+
+      <!-- Station Inspector Card -->
+      <div class="inspector-card">
+        <h2>
+          <span id="inspectStationName">Delhi - Anand Vihar</span>
+          <span id="inspectAqiBadge" class="aqi-badge aqi-severe">SEVERE</span>
+        </h2>
+
+        <div>
+          <span style="font-size: 11px; color: var(--text-dim); text-transform: uppercase;">Station Metadata</span>
+          <div id="inspectLocation" style="font-size: 13px; color: var(--text-muted); margin-top: 2px;">
+            State: Delhi | Lat: 28.65°N, Lon: 77.31°E
+          </div>
+        </div>
+
+        <div>
+          <span style="font-size: 12px; font-weight: 600; color: var(--text-muted); display: block; margin-bottom: 8px;">Multi-Horizon Calibrated PM2.5 Predictions (µg/m³)</span>
+          <div class="forecast-cards-grid">
+            <div class="horizon-card">
+              <div class="horizon-title">24h Ahead</div>
+              <div id="h24-val" class="horizon-median">385.2</div>
+              <div id="h24-band" class="horizon-band">[310 - 445]</div>
+            </div>
+            <div class="horizon-card">
+              <div class="horizon-title">48h Ahead</div>
+              <div id="h48-val" class="horizon-median">392.0</div>
+              <div id="h48-band" class="horizon-band">[318 - 452]</div>
+            </div>
+            <div class="horizon-card">
+              <div class="horizon-title">72h Ahead</div>
+              <div id="h72-val" class="horizon-median">388.4</div>
+              <div id="h72-band" class="horizon-band">[312 - 450]</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Attribution Breakdown -->
+        <div class="attribution-container">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Source Attribution Breakdown</span>
+            <span id="attrRatioText" style="font-size: 11px; font-family: var(--font-mono); color: var(--accent-amber);">46% Stubble / 54% Urban</span>
+          </div>
+          <div class="attribution-bar-wrapper">
+            <div id="attrStubbleBar" class="attr-stubble" style="width: 46%;"></div>
+            <div id="attrUrbanBar" class="attr-urban" style="width: 54%;"></div>
+          </div>
+          <div class="attr-labels">
+            <span style="color: #f97316;">🔥 Upstream Agricultural Smoke</span>
+            <span style="color: #06b6d4;">🏙️ Local Urban Baseline (Vehicles/Industry)</span>
+          </div>
+        </div>
+
+        <!-- Narrative -->
+        <div id="inspectNarrative" class="narrative-box alert">
+          Severe atmospheric inversion combined with strong northwesterly wind corridor transport from Punjab paddy stubble burning accounts for approximately 46.2% of PM2.5 loading at Anand Vihar. Graded Response Action Plan (GRAP Stage IV) recommended.
+        </div>
+
+        <!-- Regional Summary Table Mini -->
+        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-card); border-radius: 8px; padding: 10px 12px;">
+          <div style="font-size: 11px; color: var(--text-dim); text-transform: uppercase; margin-bottom: 6px;">Corridor Wind Field Conditions</div>
+          <div id="windFieldText" style="font-size: 12px; font-family: var(--font-mono); color: var(--text-muted);">
+            Wind Speed: 2.8 m/s | Direction: 315° (North-West) | Inversion: High
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benchmark Comparison Table -->
+    <div class="benchmark-card">
+      <h2>📊 Benchmark Empirical Comparison (Held-Out Test Set)</h2>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Model Architecture</th>
+              <th>24h Horizon MAE (µg/m³)</th>
+              <th>72h Horizon MAE (µg/m³)</th>
+              <th>Interval Coverage (PICP)</th>
+              <th>Stubble Attribution Capability</th>
+            </tr>
+          </thead>
+          <tbody id="benchmarkTableBody">
+            <!-- Dynamic rows inserted by app.js -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer style="margin-top: 36px; padding-top: 18px; border-top: 1px solid var(--border-card); font-size: 12px; color: var(--text-dim); display: flex; justify-content: space-between;">
+      <span>VayuDrishti Research Digital Twin &copy; 2026 OpenSource Research Project</span>
+      <span>MIT Open Source License | Powered by PyTorch & FastAPI</span>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

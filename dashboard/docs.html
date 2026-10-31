@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VayuDrishti: System Architecture & API Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .docs-container {
+      max-width: 1040px;
+      margin: 32px auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-radius: 16px;
+      padding: 40px 48px;
+    }
+    .docs-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border-card);
+    }
+    h2 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 28px 0 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding-bottom: 8px;
+    }
+    p, li {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      margin-bottom: 12px;
+    }
+    ul {
+      margin-left: 20px;
+      margin-bottom: 16px;
+    }
+    code {
+      font-family: var(--font-mono);
+      background: rgba(255,255,255,0.06);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent-amber);
+      font-size: 13px;
+    }
+    pre {
+      background: #04070d;
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 16px;
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+    pre code {
+      background: none;
+      padding: 0;
+      color: #e2e8f0;
+      font-size: 12px;
+    }
+    .endpoint-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--border-card);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 14px;
+    }
+    .method-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-right: 8px;
+    }
+    .method-get { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+    .method-post { background: rgba(245, 158, 11, 0.2); color: var(--accent-amber); }
+  </style>
+</head>
+<body>
+  <div class="docs-container">
+    <div class="docs-nav">
+      <div>
+        <h1 style="font-size: 22px; color: #fff;">VayuDrishti Documentation</h1>
+        <span style="font-size: 12px; color: var(--text-dim);">Spatiotemporal Architecture, Quantile Invariants & REST API Reference</span>
+      </div>
+      <div style="display: flex; gap: 10px;">
+        <a href="index.html" class="btn-link">🎮 Live Digital Twin</a>
+        <a href="paper.html" class="btn-link">📄 Read Paper</a>
+        <a href="https://github.com/durgesh261/indogangetic-pm25-airquality-spatiotemporal-forecasting" class="btn-link" target="_blank">⭐ GitHub</a>
+      </div>
+    </div>
+
+    <h2>1. System Architecture Overview</h2>
+    <p>
+      VayuDrishti provides a full-stack atmospheric machine learning platform specifically engineered for the Indo-Gangetic Basin. The system architecture is composed of four modular subsystems:
+    </p>
+    <ul>
+      <li><strong>Spatiotemporal Sensor Mesh:</strong> Ingests continuous ambient air quality readings from 15 CPCB monitoring stations across Delhi-NCR, Haryana, Punjab, and Uttar Pradesh.</li>
+      <li><strong>Atmospheric Advection Graph:</strong> Models dynamic air mass movement using geographic distance decay combined with learnable multi-head spatial attention.</li>
+      <li><strong>Multi-Horizon Quantile Decoder:</strong> Generates well-calibrated probabilistic forecast intervals [q10, q50, q90] across 24h, 48h, and 72h lead horizons.</li>
+      <li><strong>Causal Stubble Attribution Engine:</strong> Evaluates counterfactual zero-burn scenarios to isolate upstream biomass combustion from urban vehicular and industrial baselines.</li>
+    </ul>
+
+    <h2>2. Mathematical Invariants & Verification</h2>
+    <p>
+      The core neural forecaster is trained using the Asymmetric Multi-Quantile Pinball loss function:
+    </p>
+    <pre><code># Multi-Quantile Pinball Loss in PyTorch
+class MultiQuantileLoss(nn.Module):
+    def __init__(self, quantiles=(0.10, 0.50, 0.90)):
+        super().__init__()
+        self.quantiles = quantiles
+
+    def forward(self, preds, targets):
+        # preds: [B, N, H, 3], targets: [B, N, H]
+        losses = []
+        for i, q in enumerate(self.quantiles):
+            err = targets - preds[..., i]
+            loss_q = torch.max(q * err, (q - 1.0) * err)
+            losses.append(loss_q.mean())
+        return torch.stack(losses).sum()</code></pre>
+
+    <h2>3. CPCB National Air Quality Index (NAQI) Standards</h2>
+    <div class="table-wrapper" style="margin-bottom: 20px;">
+      <table>
+        <thead>
+          <tr>
+            <th>AQI Category</th>
+            <th>PM2.5 Range (24h avg)</th>
+            <th>Color Indicator</th>
+            <th>Public Health Impact & Regulatory Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Good</strong></td>
+            <td>0 - 30 µg/m³</td>
+            <td><span style="color: #10b981;">● Emerald Green</span></td>
+            <td>Minimal impact. Normal outdoor activity permitted.</td>
+          </tr>
+          <tr>
+            <td><strong>Satisfactory</strong></td>
+            <td>31 - 60 µg/m³</td>
+            <td><span style="color: #84cc16;">● Lime Green</span></td>
+            <td>Minor breathing discomfort to sensitive individuals.</td>
+          </tr>
+          <tr>
+            <td><strong>Moderate</strong></td>
+            <td>61 - 90 µg/m³</td>
+            <td><span style="color: #f59e0b;">● Amber Yellow</span></td>
+            <td>Discomfort to people with asthma and heart diseases.</td>
+          </tr>
+          <tr>
+            <td><strong>Poor</strong></td>
+            <td>91 - 120 µg/m³</td>
+            <td><span style="color: #f97316;">● Bright Orange</span></td>
+            <td>Breathing discomfort to most people on prolonged exposure.</td>
+          </tr>
+          <tr>
+            <td><strong>Very Poor</strong></td>
+            <td>121 - 250 µg/m³</td>
+            <td><span style="color: #ef4444;">● Crimson Red</span></td>
+            <td>Respiratory illness on prolonged exposure. GRAP Stage III.</td>
+          </tr>
+          <tr>
+            <td><strong>Severe</strong></td>
+            <td>&gt; 250 µg/m³</td>
+            <td><span style="color: #9333ea;">● Purple / Maroon</span></td>
+            <td>Affects healthy people; seriously impacts sick. GRAP Stage IV emergency.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>4. REST API Specification</h2>
+    <p>
+      The platform includes a high-performance FastAPI service running at <code>http://localhost:8000</code>. Key endpoints include:
+    </p>
+
+    <div class="endpoint-card">
+      <div><span class="method-tag method-get">GET</span><code>/health</code></div>
+      <p style="margin-top: 8px;">Health status check and model availability.</p>
+    </div>
+
+    <div class="endpoint-card">
+      <div><span class="method-tag method-get">GET</span><code>/api/v1/stations</code></div>
+      <p style="margin-top: 8px;">Retrieve list of all 15 CPCB stations, geographic coordinates, and Delhi-NCR region flags.</p>
+    </div>
+
+    <div class="endpoint-card">
+      <div><span class="method-tag method-get">GET</span><code>/api/v1/metrics</code></div>
+      <p style="margin-top: 8px;">Fetch held-out test evaluation benchmarks, including 24h/48h/72h MAE, RMSE, and PICP coverage.</p>
+    </div>
+
+    <div class="endpoint-card">
+      <div><span class="method-tag method-post">POST</span><code>/api/v1/forecast</code></div>
+      <p style="margin-top: 8px;">Generate multi-horizon quantile predictions for provided sensor feature tensors.</p>
+      <pre><code>curl -X POST "http://localhost:8000/api/v1/forecast" \
+  -H "Content-Type: application/json" \
+  -d '{"station_id": 0, "features": [[280.5, 45.2, 14.1, 210.0, 2.8, 850.0]]}'</code></pre>
+    </div>
+
+    <div class="endpoint-card">
+      <div><span class="method-tag method-post">POST</span><code>/api/v1/attribute</code></div>
+      <p style="margin-top: 8px;">Perform counterfactual ablation on active satellite fire radiative power to return stubble vs urban attribution percentages.</p>
+    </div>
+
+    <div class="endpoint-card">
+      <div><span class="method-tag method-get">GET</span><code>/api/v1/episodes</code></div>
+      <p style="margin-top: 8px;">List historical winter smog episodes and synthetic test scenarios for regional analysis.</p>
+    </div>
+
+    <h2>5. Quickstart Guide</h2>
+    <pre><code># 1. Clone repository
+git clone https://github.com/durgesh261/indogangetic-pm25-airquality-spatiotemporal-forecasting.git
+cd indogangetic-pm25-airquality-spatiotemporal-forecasting
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Train spatiotemporal model & run tests
+python -m unittest discover tests/
+
+# 4. Launch FastAPI server
+uvicorn src.api:app --reload --port 8000</code></pre>
+
+    <footer style="margin-top: 40px; padding-top: 16px; border-top: 1px solid var(--border-card); font-size: 12px; color: var(--text-dim);">
+      VayuDrishti Environmental Deep Learning System &bull; Open Source under MIT License
+    </footer>
+  </div>
+</body>
+</html>
+
