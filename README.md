@@ -1,7 +1,6 @@
 # Indo-Gangetic PM2.5 Spatiotemporal Smog Forecasting & Stubble-Burning Attribution
 
 [![Live Simulation](https://img.shields.io/badge/Live_Simulation-Digital_Twin-blueviolet?style=for-the-badge&logo=googlechrome&logoColor=white)](https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/)
-[![Research Paper](https://img.shields.io/badge/Research_Paper-Manuscript-orange?style=for-the-badge&logo=arxiv&logoColor=white)](https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/paper.html)
 [![System Docs](https://img.shields.io/badge/System_Docs-Architecture-blue?style=for-the-badge&logo=gitbook&logoColor=white)](https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/docs.html)
 
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
@@ -13,8 +12,7 @@
 > **A deep spatiotemporal attention framework for multi-horizon (24h, 48h, 72h) particulate matter ($PM_{2.5}$) smog forecasting and satellite-driven source attribution across the Indo-Gangetic Basin (Delhi-NCR, Punjab, Haryana, Uttar Pradesh). Integrates ground monitoring sensors (CPCB), NASA satellite active fire observations, meteorological wind fields, and multi-quantile Pinball loss to generate calibrated prediction intervals and source attribution.**
 
 🔗 **Interactive Live Links:**
-* 🎮 **Interactive Web Digital Twin:** [https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/](https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/)
-* 📄 **Research Paper Manuscript:** [https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/paper.html](https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/paper.html)
+* 🎮 **Interactive Web Digital Twin & Simulation:** [https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/](https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/)
 * 📂 **Interactive System Architecture & API Docs:** [https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/docs.html](https://durgesh261.github.io/indogangetic-pm25-airquality-spatiotemporal-forecasting/docs.html)
 
 ---
